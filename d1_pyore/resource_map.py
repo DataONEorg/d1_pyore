@@ -39,12 +39,16 @@ NAMESPACES = {u'cito': u'http://purl.org/spar/cito/',
               u'dcterms': u'http://purl.org/dc/terms/',
               u'ore': u'http://www.openarchives.org/ore/terms/',
               u'foaf': u'http://xmlns.com/foaf/0.1/',
+              u'prov': u'http://www.w3.org/ns/prov#',
+              u'provone':u'http://purl.org/provone/2015/15/ontology#',
               }
 
 # RDFLib wrappers around the namespaces. Others are defined by RDFLib
 DCTERMS = rdflib.Namespace( NAMESPACES[u'dcterms'] )
 CITO = rdflib.Namespace( NAMESPACES[u'cito'] )
 ORE = rdflib.Namespace( NAMESPACES[u'ore'] )
+PROV = rdflib.Namespace( NAMESPACES[u'prov'] )
+PROVONE = rdflib.Namespace( NAMESPACES[u'provone'] )
 
 
 #===============================================================================
