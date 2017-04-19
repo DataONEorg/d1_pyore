@@ -109,7 +109,19 @@ class ResourceMap(rdflib.ConjunctiveGraph):
     self.add( (ORE.Aggregation, RDFS.label, rdflib.term.Literal(u'Aggregation')) )
     self._ore_initialized = True
     
-  
+
+  def getDerivedFrom(self, pid):
+    ''' Returns a list of URIRef of entities that pid is derived from
+    :param pid:
+    :return:
+    '''
+    if not self._ore_initialized:
+      raise ValueError("Resource map structure is not initialized.")
+    return [ o for o in self.subjects(predicate=RDF.type,
+                                      object=PROVONE.wasDerivedFrom) ]
+
+
+
   def getAggregation(self):
     '''Return the URIRef of the Aggregation entity
     '''
@@ -268,6 +280,9 @@ class ResourceMap(rdflib.ConjunctiveGraph):
       list of (subject, object) strings
 
     '''
+    if isinstance(predicate, basestring):
+      predicate = URIRef( predicate )
+      logging.debug( str(predicate) )
     return [(str(s), str(o)) for s, o in self.subject_objects( predicate )]
 
 

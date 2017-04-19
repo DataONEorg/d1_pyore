@@ -8,6 +8,8 @@ import logging
 from resource_map import DCTERMS
 from resource_map import CITO
 from resource_map import ORE
+from resource_map import PROV
+from resource_map import PROVONE
 from resource_map import ResourceMap
 
 def createSimpleResourceMap(ore_pid,

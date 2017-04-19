@@ -64,6 +64,7 @@ def packageToObject(pkg):
          'data':[],
          'documents':{},
          'isDocumentedBy':{},
+         'wasDerivedFrom': {},
          }
   
   #Load the aggregations from the package
@@ -95,9 +96,24 @@ def packageToObject(pkg):
       obj['documents'][oid[0]] = []
     obj['documents'][oid[0]].append(oid[1])
 
+  ids = pkg.getSubjectObjectsByPredicate(d1_pyore.PROV.wasDerivedFrom)
+  for oid in ids:
+    if oid[0] not in obj['wasDerivedFrom'].keys():
+      obj['wasDerivedFrom'][oid[0]] = []
+    obj['wasDerivedFrom'][oid[0]].append(oid[1])
+
   return obj
   
-  
+
+def dumpPackagePredicate(pkg, predicate):
+  print( predicate )
+  ids = pkg.getSubjectObjectsByPredicate(predicate)
+  for oid in ids:
+    print( "0: {0}".format(oid[0]))
+    print( "1: {0}".format(oid[1]))
+
+
+
 def packageToText(pkg, fto=sys.stdout):
   obj = packageToObject(pkg)
 
@@ -148,12 +164,41 @@ def packageToText(pkg, fto=sys.stdout):
       fto.write( "       pid: {0}\n".format(pid) )
       j += 1
     i += 1
-  
+
+  i = 1
+  fto.write( "\nPROV:wasDerivedFrom\n" )
+  for doc in obj['wasDerivedFrom'].keys():
+    fto.write( "\nThe data:\n" )
+    fto.write( "{0}:  id: {1}\n".format(i, doc) )
+    pid = obj['objects'][doc]['pid']
+    fto.write( "   pid: {0}\n\n".format(pid) )
+    fto.write( "   was derived from:\n" )
+    j = 1
+    for oid in obj['wasDerivedFrom'][doc]:
+      pid = obj['objects'][oid]['pid']
+      fto.write( "    {0}:  id: {1}\n".format(j, oid) )
+      fto.write( "       pid: {0}\n".format(pid) )
+      j += 1
+    i += 1
+
     
-def main(url, format):
+def main(url, format,
+         predicates=None,
+         list_predicates=False):
   ore_doc = downloadDocument(url)
   pkg = d1_pyore.ResourceMap()
   pkg.parse(data=ore_doc)
+  if list_predicates:
+    preds = pkg.getAllPredicates()
+    unique = reduce(lambda l, x: l if x in l else l + [x], preds, [])
+    unique.sort()
+    for pred in unique:
+      print( pred )
+    return
+  if predicates is not None:
+    for predicate in predicates:
+      dumpPackagePredicate(pkg, predicate)
+    return
   if args.format == "text":
     packageToText(pkg)
     return
@@ -174,6 +219,15 @@ if __name__ == "__main__":
   parser.add_argument('-f', '--format',
                       default="text",
                       help="Format for output. Can be text or any of the standard serialization formats.")
+
+  parser.add_argument('-P', '--list_predicates',
+                      default=False,
+                      action='store_true',
+                      help='List predicates in document and exit')
+
+  parser.add_argument('-p', '--predicate',
+                      default=None,
+                      help="Show only entries of specified predicate, e.g. PROV:wasDerivedFrom")
   
   args = parser.parse_args()
   
@@ -183,5 +237,10 @@ if __name__ == "__main__":
   else:
     logging.basicConfig( level=args.log )
 
-  main(args.url, args.format.lower())
+  predicates = None
+  if args.predicate is not None:
+    predicates = [ args.predicate, ]
+  main(args.url, args.format.lower(),
+       predicates,
+       list_predicates=args.list_predicates)
 
