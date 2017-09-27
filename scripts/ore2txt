@@ -152,9 +152,9 @@ def packageToText(pkg, fto=sys.stdout):
 
 def listPackageIdentifiers(pkg, fto=sys.stdout):
   pids = pkg.getAggregatedPids()
+  pids.sort()
   for pid in pids:
-    print pid
-
+    fto.write( pid + "\n" )
 
 
 def main(url, format):
