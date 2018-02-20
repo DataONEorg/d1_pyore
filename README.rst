@@ -1,6 +1,17 @@
 Create and Consume OAI-ORE Documents
 ====================================
 
+**Important:** THIS LIBRARY IS DEPRECATED
+   
+
+This repository is retained for instructional purposes only.
+   
+The functionality provided by this library is fully incorporated into the DataONE Python libraries located in the `d1-python <https://github.com/DataONEorg/d1_python>`_ respository. 
+
+See ``d1_common.resource_map`` in the `d1_common <https://github.com/DataONEorg/d1_python/tree/master/lib_common/src/d1_common>`_ libary. `Documentation is available <http://dataone-python.readthedocs.io/en/latest/common/index.html>`_ at readthedocs.
+
+----
+
 d1_pyore is a DataONE python library for working with `OAI-ORE`_ documents which 
 are used by DataONE Member Nodes to describe data packages.
 
